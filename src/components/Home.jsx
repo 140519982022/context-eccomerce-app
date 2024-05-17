@@ -41,7 +41,14 @@ export default function Home() {
             <section class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
 
                 {
+                    apiProductsList.length >=1 ? 
                     apiProductsList.map((items, index) => <ProductDetail key={index} items={items} cartContity={cartContity} setCartContity={setCartContity}></ProductDetail>)
+                    :
+                    
+                    <div className='text-red-500 text-[20px] font-bold'>
+
+                        Data Not Found
+                    </div>
                 }
 
             </section>
