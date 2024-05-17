@@ -62,7 +62,7 @@ export default function Home() {
 }
 
 function ProductDetail({ items, setCartContity, cartContity }) {
-    let { id, category, brand, price, thumbnail } = items;
+    let { id, category, brand, price, thumbnail,description } = items;
 
     let addCart = () => {
         // alert(price)
@@ -71,6 +71,7 @@ function ProductDetail({ items, setCartContity, cartContity }) {
             'id': id,
             'Qty': 1,
             'category': category,
+            'description':description,
             'brand': brand,
             'price': price,
             'thumbnail': thumbnail
