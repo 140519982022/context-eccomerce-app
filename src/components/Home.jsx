@@ -3,11 +3,10 @@ import Header from './common/Header'
 import Footer from './common/Footer'
 import { CartContextCreate } from '../Context/CartContext'
 import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function Home() {
-
-
-    let { cartContity, setCartContity } = useContext(CartContextCreate)
 
     const [apiProductsList, setApiProductsList] = useState([]);
 
@@ -23,15 +22,16 @@ export default function Home() {
                 setApiProductsList(finalResponse.products)
 
             })
-
-
-    }, [])
+        }, []
+    )
 
     return (
         <>
             <Header>
                 <h1>hello im header children</h1>
             </Header>
+
+            <ToastContainer />
 
             <div class="text-center p-10">
                 <h1 class="font-bold text-4xl mb-4">Responsive Product card grid</h1>
@@ -42,43 +42,70 @@ export default function Home() {
 
                 {
                     apiProductsList.length >= 1 ?
-                        apiProductsList.map((items, index) => <ProductDetail key={index} items={items} setCartContity={setCartContity} cartContity={cartContity}></ProductDetail>)
-                        :
+                    
+                    apiProductsList.map((items, index) => <ProductDetail key={index} items={items}></ProductDetail>)
+                        
+                    :
 
-                        <div className='text-red-500 text-[20px] font-bold'>
+                    <div className='text-red-500 text-[20px] font-bold'>
 
-                            Data Not Found
-                        </div>
+                        Data Not Found
+                    </div>
                 }
 
             </section>
 
             <div class="text-center py-20 px-10">
-                <h2 class="font-bold text-2xl md:text-4xl mb-4">Thanks to <a href="https://unsplash.com/@nixcreative" class="underline font-black">Tyler Nix</a> for those AMAZING product images!</h2>
+                <h2 class="font-bold text-2xl md:text-4xl mb-4">Thanks to <a href="#" class="underline font-black">Tyler Nix</a> for those AMAZING product images!</h2>
             </div>
+
             <Footer></Footer>
         </>
     )
 }
 
-function ProductDetail({ items, setCartContity, cartContity }) {
-    let { id, category, brand, price, thumbnail,description } = items;
+function ProductDetail({ items }) {
+
+    let { cartContity, setCartContity } = useContext(CartContextCreate)
+    let { id, category, brand, price, thumbnail, description, title } = items;
 
     let addCart = () => {
         // alert(price)
 
         let collectCartDetails = {
-            'id': id,
-            'Qty': 1,
-            'category': category,
-            'description':description,
-            'brand': brand,
-            'price': price,
-            'thumbnail': thumbnail
+            id,
+            qty: 1,
+            title,
+            price,
+            thumbnail
         }
 
-        setCartContity([...cartContity, collectCartDetails])
+        let cartItems = cartContity.filter((data, index) => data.id == id)
+        let finalData = []
+        if (cartItems.length > 0) {
 
+            finalData = cartContity.filter((oldItem, index) => {
+                if (oldItem.id == id) {
+
+                    oldItem['qty'] = oldItem['qty'] + 1
+
+                }
+
+                return oldItem
+
+            })
+
+            setCartContity(finalData)
+            toast.info(title + ' - Quantity updated successfully')
+
+            // console.log('old entry only qty update')
+        }
+        else {
+            // console.log('new entry')
+            finalData = [...cartContity, collectCartDetails]
+            setCartContity(finalData)
+            toast.success(title + ' - added into cart list')
+        }
     }
 
     return (
@@ -105,5 +132,4 @@ function ProductDetail({ items, setCartContity, cartContity }) {
             </div>
         </>
     )
-
 }
